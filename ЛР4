@@ -1,0 +1,241 @@
+Познакомиться с библиотечными функциями работы со строками.
+Написать программу, которая использует эти функции (для работы с ними подключить файл string.h):
+strlen() — определение дины строки;
+strcat() — конкатенация CTPOK;
+strepy() - копирование строк;
+stremp() — сравнение строк.
+
+2. Написать свои варианты функций:
+определения длины строки (выполнить работу тремя слособами);
+копирования строк;
+сравнения строк;
+конкатенации строк.
+Структура программ следующая: функция main() объявляет строки и вызывает другую функцию, которая и выполняет работу с переданными ей параметрами:
+
+#include <iostream.h>
+void main(void)
+{
+char str1[]="qwerty”, str2[]="1234567890";
+int dlina1 (char*);
+int dlina2 (char*);
+int dlina3 (char*);
+void kopir (char*, char*);
+void sravn (char*, char#*);
+void konkat (char*, char*);
+// использование функций длины строки
+cout<<“длина str1=“"<<dlina1 (str1)<<”,str2=";
+cout<< dlina1 (str2)<< endl;
+cout<<“длина str1="<<dlina2(strl)<<”, str2=
+cout<< dlina2(str2)<< endl;
+cout<<“длина str1= “<<dlina3(strl)<<”, str2
+cout<< dlina3(str2)<< endl;
+cout<< “после обмена 1: a= “<< а <<"b="<<b<< endl;
+//вызов kopir (char*, char*);
+cout<< “результат копирования:str1= “<< strl;
+cout<<” ‚ str2="<<str2<< endl;
+//вызов sravn(char*, char*);
+cout<< “результат cpaBHeHMA:Strls “<< strl;
+cout<<” ‚ str2="<<str2<< endl;
+//вызов konkat (char*, char*);
+сопЕ<<“результат сцепления:5Ег1= “<< strl;
+cout<<” ‚ str2="<<str2<< endl;
+}
+3. Переписать функции так, чтобы они использовали динамическую память при задании строк:
+#include <iostream.h>
+#include <alloc.h>
+void main (void)
+{
+char *strl, *str2;
+strl=(char*)malloc(100);
+str2=(char*)malloc (100) ;
+......
+free(strl);
+free(str2) ;
+}
+4. Изменить программу так, чтобы вместо malloc() использовалась функция calloc(). В чем сходство и различие этих функций?
+5. В следующей программе организовать массив строк. Применить функции, написанные в предыдущем пункте к строкам, составляющим этот массив.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Прежде чем перейти к написанию программ, рассмотрим основные функции работы со строками из библиотеки string.h:
+- strlen(): Определяет длину строки путем подсчета символов до символа нулевого окончания ('\0').
+- strcat(): Конкатенирует (объединяет) две строки, добавляя содержимое второй строки в конец первой строки.
+- strcpy(): Копирует содержимое одной строки в другую строку.
+- strcmp(): Сравнивает две строки. Возвращает 0, если строки идентичны, положительное число, если первая строка больше второй, и отрицательное число, если первая строка меньше второй.
+
+Теперь перейдем к написанию программ.
+
+1. Программа с использованием библиотечных функций:
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+    char str1[] = "qwerty", str2[] = "1234567890";
+
+    // использование функций длины строки
+    cout << "длина str1=" << strlen(str1) << ", str2=" << strlen(str2) << endl;
+
+    // использование функции конкатенации
+    strcat(str1, str2);
+    cout << "после конкатенации: str1=" << str1 << endl;
+
+    // использование функции копирования
+    char str3[20];
+    strcpy(str3, str1);
+    cout << "копия str1: str3=" << str3 << endl;
+
+    // использование функции сравнения
+    int result = strcmp(str1, str3);
+    if (result == 0) {
+        cout << "строки str1 и str3 идентичны" << endl;
+    } else {
+        cout << "строки str1 и str3 различны" << endl;
+    }
+
+    return 0;
+}
+
+2. Свои варианты функций:
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Определение длины строки (3 способа)
+int length1(char* str) {
+    int len = 0;
+    while (*str != '\0') {
+        len++;
+        str++;
+    }
+    return len;
+}
+
+int length2(char* str) {
+    int len;
+    for (len = 0; str[len] != '\0'; len++);
+    return len;
+}
+
+int length3(char* str) {
+    return strlen(str);
+}
+
+// Копирование строк
+void copyStr(char* dest, const char* src) {
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
+// Сравнение строк
+int compareStr(char* str1, char* str2) {
+    return strcmp(str1, str2);
+}
+
+// Конкатенация строк
+void concatStr(char* dest, const char* src) {
+    while (*dest) {
+        dest++;
+    }
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+}
+
+int main() {
+    char str1[] = "Hello", str2[] = "World";
+    char str3[20] = "";
+
+    // определение длины строки
+    cout << "Длина str1 (метод 1): " << length1(str1) << endl;
+    cout << "Длина str2 (метод 2): " << length2(str2) << endl;
+    cout << "Длина str3 (метод 3): " << length3(str3) << endl;
+
+    // копирование строк
+    copyStr(str3, str1);
+    cout << "Копия str1: " << str3 << endl;
+
+    // сравнение строк
+    int result = compareStr(str1, str3);
+    if (result == 0) {
+        cout << "Строки str1 и str3 идентичны" << endl;
+    } else {
+        cout << "Строки str1 и str3 различны" << endl;
+    }
+
+    // конкатенация строк
+    concatStr(str3, str2);
+    cout << "После конкатенации: " << str3 << endl;
+
+    return 0;
+}
+
+3. Использование динамической памяти:
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+    char* str1 = new char[100];
+    char* str2 = new char[100];
+
+    strcpy(str1, "Hello");
+    strcpy(str2, "World");
+
+    // использование функций
+    cout << "Длина str1: " << strlen(str1) << endl;
+    cout << "Длина str2: " << strlen(str2) << endl;
+
+    // освобождение памяти
+    delete[] str1;
+    delete[] str2;
+
+    return 0;
+}
+
+4. Замена malloc() на calloc()
+Функции malloc() и calloc() используются для выделения динамической памяти, но они работают по-разному:
+
+malloc() выделяет блок памяти указанного размера, но не обнуляет его содержимое.
+calloc() выделяет блок памяти указанного размера и обнуляет его содержимое.
+Пример замены malloc() на calloc():
+
+char* str1 = (char*)calloc(100, sizeof(char));
+char* str2 = (char*)calloc(100, sizeof(char));
+
+5. Массив строк и применение функций к нему
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+    const int size = 3;
+    char** strings = new char*[size];
+
+    for (int i = 0; i < size; i++) {
+        strings[i] = new char[100];
+        cout << "Введите строку " << i + 1 << ": ";
+        cin.getline(strings[i], 100);
+    }
+
+    // Пример использования функций
+    cout << "Длины строк:" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << "Строка " << i + 1 << ": " << strlen(strings[i]) << endl;
+    }
+
+    // Освобождение памяти
+    for (int i = 0; i < size; i++) {
+        delete[] strings[i];
+    }
+    delete[] strings;
+
+    return 0;
+}
+Это примеры программ, демонстрирующих использование различных функций для работы со строками и динамической памятью.
