@@ -1,0 +1,265 @@
+1, Разобраться, как работает предложенная программа сортировки массива методом «мини-макса».
+2. Написать программы, сортирующие одномерный массив методами «пузырька» и «быстрой сортировки». Можно ли такие функции использовать для работы c многомерным массивом?
+3. Для массива целых значений выполнить сортировку по возрастанию четных и по убыванию нечетных значений.
+4. Отсортировать массив по возрастанию на интервале индексов от N1 до N2.
+5. Отсортировать массив по убыванию на интервале индексов от N1 до N2.
+Функция сортировки массива методом "мини-макса"
+#include <iostream.h>
+#include <conio.h>
+void main(void)
+(
+int mas[]={2,5,-8,1,-4,6,3,-5,-9,13,0,4,9};
+/текущие индексы мин. и макс. элементов
+int imin, imax;
+/вычисление n - количества элементов
+int n=sizeof(mas)/sizeof(int);
+int i;
+/установка начальных индексов для мин и макс
+imin=i=0; jmax=i=0;
+clrscr();
+for(i=0; i<n; i++)
+cout << mas[i] << ' ';
+cout << endl;
+for (i=0; i<n-1; i++) //Нахождение мин и макс
+{
+imin=1i;
+for(int j=i+1; j<n; j++)
+if(mas[j] < mas(imin]) imin = j;
+int t=mas[i]; 
+mas[i]=mas[imin] ;
+mas[imin]=t;
+)
+for(i=0; i<n; 1++) //вывод на экран
+cout << mas[i] << ' ';
+cout << endl;
+}
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1) Программа сортировки массива методом "мини-макса"
+Программа использует метод сортировки выбором. Он работает следующим образом:
+
+1. Находим минимальный элемент в оставшейся части массива.
+2. Обмениваем минимальный элемент с первым элементом в оставшейся части массива.
+3. Повторяем шаги 1-2 для оставшейся части массива, начиная со второго элемента.
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int mas[] = {2, 5, -8, 1, -4, 6, 3, -5, -9, 13, 0, 4, 9};
+    int n = sizeof(mas) / sizeof(int);
+
+    cout << "Исходный массив:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << mas[i] << ' ';
+    }
+    cout << endl;
+
+    for (int i = 0; i < n - 1; i++) {
+        int imin = i;
+        for (int j = i + 1; j < n; j++) {
+            if (mas[j] < mas[imin]) {
+                imin = j;
+            }
+        }
+        int temp = mas[i];
+        mas[i] = mas[imin];
+        mas[imin] = temp;
+    }
+
+    cout << "Отсортированный массив по возрастанию:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << mas[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+2) Программы сортировки одномерного массива методами "пузырька" и "быстрой сортировки"
+Пример программы для сортировки методом пузырька (bubble sort):
+#include <iostream>
+using namespace std;
+
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 1, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    bubbleSort(arr, n);
+
+    cout << "Sorted array using Bubble Sort:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+
+Пример программы для сортировки методом быстрой сортировки (quick sort):
+#include <iostream>
+using namespace std;
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivot = arr[high];
+        int i = low - 1;
+
+        for (int j = low; j <= high - 1; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+
+        int pi = i + 1;
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 1, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    quickSort(arr, 0, n - 1);
+
+    cout << "Sorted array using Quick Sort:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+
+Оба метода сортировки можно применять к многомерным массивам, но нужно учесть специфику доступа к элементам в многомерных массивах (например, двумерных массивах).
+
+
+3) Сортировка массива по возрастанию четных и по убыванию нечетных значений
+#include <iostream>
+using namespace std;
+
+void sortEvenOdd(int arr[], int n) {
+    int evenIdx = 0;
+    int oddIdx = n - 1;
+
+    while (evenIdx < oddIdx) {
+        while (arr[evenIdx] % 2 == 0 && evenIdx < oddIdx) {
+            evenIdx++;
+        }
+        while (arr[oddIdx] % 2 != 0 && evenIdx < oddIdx) {
+            oddIdx--;
+        }
+        if (evenIdx < oddIdx) {
+            int temp = arr[evenIdx];
+            arr[evenIdx] = arr[oddIdx];
+            arr[oddIdx] = temp;
+        }
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 1, 2, 9, 10, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    sortEvenOdd(arr, n);
+
+    cout << "Sorted array with even numbers first and odd numbers later:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+4) Сортировка массива по возрастанию на интервале индексов от N1 до N2
+#include <iostream>
+using namespace std;
+
+void sortInterval(int arr[], int n, int start, int end) {
+    for (int i = start; i <= end; i++) {
+        for (int j = i + 1; j <= end; j++) {
+            if (arr[i] > arr[j]) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 1, 2, 9, 10, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int start = 2; // Начальный индекс
+    int end = 5; // Конечный индекс
+
+    sortInterval(arr, n, start, end);
+
+    cout << "Sorted array in the interval [" << start << ", " << end << "]:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+5) Сортировка массива по убыванию на интервале индексов от N1 до N2
+#include <iostream>
+using namespace std;
+
+void sortIntervalDescending(int arr[], int n, int start, int end) {
+    for (int i = start; i <= end; i++) {
+        for (int j = i + 1; j <= end; j++) {
+            if (arr[i] < arr[j]) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 1, 2, 9, 10, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int start = 2; // Начальный индекс
+    int end = 5; // Конечный индекс
+
+    sortIntervalDescending(arr, n, start, end);
+
+    cout << "Sorted array in descending order in the interval [" << start << ", " << end << "]:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
+Эти программы реализуют указанные операции с массивом и демонстрируют их работу. Вы можете запустить их и проверить результаты. Если у вас возникнут дополнительные вопросы, не стесняйтесь их задать.
