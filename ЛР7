@@ -1,0 +1,293 @@
+1. Предлагаемая программа выводит на экран 2 объекта, которые
+перемещаются по экрану при нажатии клавиши. Необходимо перевести эту
+программу с Паскаля на С++. Графические библиотеки языкасходны. При
+написании программы необходимо помнить, что все ключевые слова,
+названия библиотечных функций необходимо писать строчными буквами.
+Uses Graph, Crt;
+Type Point = Object
+X, Y: Integer;
+Cvet:Word;
+Procedure Init (XN, YN:Integer; Color: Word);
+Procedure Show; virtual;
+Procedure Hide; virtual;
+Procedure Locat (Var XL, YL: Integer);
+Procedure Fly (Cost:Integer) ;
+End;
+Krug = Object (Point)
+Radius: Word;
+Constructor Init (XN, YN: Integer;
+R, Color: Word);
+Procedure Show; virtual;
+Procedure Hide; virtual;
+End;
+Ring = Object (Krug)
+Width: Word;
+Constructor CRing;
+Procedure Init (XN, YN: Integer; R, Color, Wid: Word);
+Procedure Show; virtual;
+End;
+Procedure Point.Init;
+Begin
+X:= XN; Y:= YN; Cvet:= Color
+End;
+Procedure Point Show;Begin End;
+Procedure Point. Hide;Begin End;
+Procedure Point.Locat;
+Begin
+XL: = X; YL:= Y
+End;
+Procedure Point Fly;
+Var XX, YY: Integer;
+Begin
+Show;
+Randomized;
+Repeat
+Local (XX, YY) ;
+Repeat {перемещениеl}
+XX: = XX + Round((Random-0.5) *Cost)
+Until (XX > 0) And (XX < GetMaxX) ;
+Repeat {перемещение2}
+YY:= YY + Round((Random-0.5)*Cost)
+Until (YY > 0) And (Y Y < GetMaxY);
+Hide;
+X:= XX; Y:= YY;
+Show;
+Delay (300) ( мелькание кругов }
+Readln;
+Until Keypressed;
+End;
+Constructor Krug. Init;
+Begin
+Point. Init (XN, YN, Color);
+Radius:= R;
+Show
+End;
+Procedure Krug.Show;
+Begin
+SetColor (Cvet);
+SetFillStyle (1, Cvet);
+Pieslice (X, y, 0, 320, Radius)
+End;
+Procedure Krug. Hide;
+Begin
+SetColor (GetBkColor) ;
+SetFillStyle (1,GetBKColor);
+Pieslice (X, Y, 0, 320, Radius)
+End;
+Procedure Ring. Init;
+Begin
+Width:= Wide;
+Krug. Init (XN, YN, R, Color)
+End;
+Constructor Ring.Ring; Begin End;
+Procedure Ring. Show;
+Begin
+Круг. Show;
+SetFillStyle (10, GetBkColor);
+Pieslice (X, Y, 90 , 320, Radius - Width)
+End;
+Var
+d,r: Integer;
+Тест Krug: Круг;
+Testing: Ring;
+begin
+d:= detect; InitGraph(d,r,'c:\bp\bgi');
+SetBKColor (80);
+Тест Круг. Init (150, 40, 50, 1);
+Testing. Crying;
+Testing. Init (450, 80, 90, 50, 10);
+Тест Круг. Fly (100);
+Testing.Fly (60);
+Тест Круг. Fly (60);
+Readln;
+Тест Круг. Hide;
+Testing. Hide;
+Readln;
+END.
+2. Дополнить набор методов одного из классов функциями, которые выполняют сужение-расширение вырезанного сектора на фигурах и смену цветов фигур одновременно с перемещением.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#include <graphics.h>
+#include <conio.h>
+#include <iostream>
+#include <cstdlib> // Для использования функций rand и srand
+#include <ctime> // Для инициализации генератора случайных чисел
+
+using namespace std;
+
+// Базовый класс для объектов на экране
+class Point {
+protected:
+    int X, Y; // Координаты объекта
+    int Color; // Цвет объекта
+public:
+    Point(int XN = 0, int YN = 0, int ColorN = WHITE) : X(XN), Y(YN), Color(ColorN) {}
+    virtual void Show() {} // Отобразить объект
+    virtual void Hide() {} // Скрыть объект
+    virtual void Locate(int &XL, int &YL) { XL = X; YL = Y; } // Получить текущие координаты объекта
+    virtual void Fly(int Cost) {} // Переместить объект
+};
+
+// Класс для кругов
+class Krug : public Point {
+private:
+    int Radius; // Радиус круга
+public:
+    Krug(int XN, int YN, int R, int ColorN) : Point(XN, YN, ColorN), Radius(R) {}
+    void Show() override {
+        setcolor(Color);
+        setfillstyle(SOLID_FILL, Color);
+        pieslice(X, Y, 0, 360, Radius); // Отображение круга
+    }
+    void Hide() override {
+        setcolor(getbkcolor());
+        setfillstyle(SOLID_FILL, getbkcolor());
+        pieslice(X, Y, 0, 360, Radius); // Скрытие круга
+    }
+    void Fly(int Cost) override {
+        Show();
+        int XX = X, YY = Y;
+        srand(time(0)); // Инициализация генератора случайных чисел
+        do {
+            XX += (rand() % Cost) - (Cost / 2); // Случайное перемещение по X
+        } while (XX <= 0 || XX >= getmaxx());
+        do {
+            YY += (rand() % Cost) - (Cost / 2); // Случайное перемещение по Y
+        } while (YY <= 0 || YY >= getmaxy());
+        Hide();
+        X = XX; Y = YY; // Обновление координат
+        Show();
+        delay(300); // Задержка для анимации
+    }
+};
+
+// Класс для кольца
+class Ring : public Krug {
+private:
+    int Width; // Ширина кольца
+public:
+    Ring(int XN, int YN, int R, int ColorN, int Wid) : Krug(XN, YN, R, ColorN), Width(Wid) {}
+    void Show() override {
+        Krug::Show();
+        setfillstyle(SOLID_FILL, getbkcolor());
+        pieslice(X, Y, 90, 320, Radius - Width); // Отображение кольца
+    }
+};
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, ""); // Инициализация графической системы
+
+    Krug k1(150, 40, 50, 1); // Создание круга
+    Ring r1(450, 80, 90, 50, 10); // Создание кольца
+
+    k1.Fly(100); // Перемещение круга
+    r1.Fly(60); // Перемещение кольца
+    k1.Fly(60); // Перемещение круга
+
+    delay(1000); // Задержка перед закрытием окна
+
+    closegraph(); // Закрытие графической системы
+    return 0;
+}
+
+Для добавления функций сужения-расширения вырезанного сектора на фигурах и смены цветов фигур одновременно с перемещением в классе Krug я предлагаю следующие изменения:
+#include <graphics.h>
+#include <conio.h>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class Point {
+protected:
+    int X, Y;
+    int Color;
+public:
+    Point(int XN = 0, int YN = 0, int ColorN = WHITE) : X(XN), Y(YN), Color(ColorN) {}
+    virtual void Show() {}
+    virtual void Hide() {}
+    virtual void Locate(int &XL, int &YL) { XL = X; YL = Y; }
+    virtual void Fly(int Cost) {}
+};
+
+class Krug : public Point {
+private:
+    int Radius;
+public:
+    Krug(int XN, int YN, int R, int ColorN) : Point(XN, YN, ColorN), Radius(R) {}
+    void Show() override {
+        setcolor(Color);
+        setfillstyle(SOLID_FILL, Color);
+        pieslice(X, Y, 0, 360, Radius);
+    }
+    void Hide() override {
+        setcolor(getbkcolor());
+        setfillstyle(SOLID_FILL, getbkcolor());
+        pieslice(X, Y, 0, 360, Radius);
+    }
+    void Fly(int Cost) override {
+        Show();
+        int XX = X, YY = Y;
+        srand(time(0));
+        do {
+            XX += (rand() % Cost) - (Cost / 2);
+        } while (XX <= 0 || XX >= getmaxx());
+        do {
+            YY += (rand() % Cost) - (Cost / 2);
+        } while (YY <= 0 || YY >= getmaxy());
+        Hide();
+        X = XX; Y = YY;
+        Show();
+        delay(300);
+    }
+
+    // Функция для сужения сектора
+    void ShrinkSector(int angle) {
+        Hide();
+        setfillstyle(SOLID_FILL, getbkcolor());
+        pieslice(X, Y, 0, angle, Radius);
+        Show();
+    }
+
+    // Функция для расширения сектора
+    void ExpandSector(int angle) {
+        Hide();
+        setfillstyle(SOLID_FILL, Color);
+        pieslice(X, Y, 0, angle, Radius);
+        Show();
+    }
+
+    // Функция для смены цвета фигуры
+    void ChangeColor(int NewColor) {
+        Hide();
+        Color = NewColor;
+        Show();
+    }
+};
+
+int main() {
+    int gd = DETECT, gm;
+    initgraph(&gd, &gm, "");
+
+    Krug k1(150, 150, 50, RED); // Создание круга
+
+    k1.Show();
+    delay(1000);
+    
+    // Примеры использования новых функций
+    k1.ShrinkSector(180); // Сужение сектора до 180 градусов
+    delay(1000);
+    k1.ExpandSector(270); // Расширение сектора до 270 градусов
+    delay(1000);
+    k1.ChangeColor(GREEN); // Смена цвета на зеленый
+    delay(1000);
+
+    closegraph();
+    return 0;
+}
+
+Этот пример показывает, как добавить методы ShrinkSector, ExpandSector и ChangeColor в класс Krug для сужения-расширения вырезанного сектора и смены цвета фигур одновременно с перемещением. В main приведены примеры использования этих новых функций.
