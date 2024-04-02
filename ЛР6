@@ -1,0 +1,227 @@
+1. Описать класс для работы со строкой, как со стандартным типом данных.
+- В разделе описания элементов-данных класс должен иметь переменную для хранения символов строки.
+- В разделе описания элементов-функций нсобходимо предусмотреть:
+  конструкторы в нескольких вариантах;
+  деструкторы, если необходимо;
+  перегруженные операции для выполнения присваивания (=);
+  сцепления (+), сравнения (==);
+  методы для определения длины строки;
+  методы ввода и вывода строки.
+2. Описание класса выделить в заголовочный файл, определение его методов — в файл с расширением .срр, текст главной функции написать в отдельном файле.
+Прототип программы:
+#include <iostream>
+#include <cstring>
+using namespace std;
+class Stroka {
+    char str[80];
+public:
+    Stroka(char*);
+    Stroka();
+    Stroka(const Stroka&);
+    Stroka& operator=(const Stroka&);
+    Stroka& operator+(const Stroka&);
+    int operator==(const Stroka&);
+    int dlina();
+    void vvod();
+    void vyvod();
+};
+Stroka::Stroka(char *string) {
+    strcpy(str, string);
+}
+Stroka::Stroka() {
+    str[0] = '\0';
+}
+Stroka::Stroka(const Stroka& s) {
+    strcpy(str, s.str);
+}
+Stroka& Stroka::operator=(const Stroka& s) {
+    if (this != &s) {
+        strcpy(str, s.str);
+    }
+    return *this;
+}
+Stroka& Stroka::operator+(const Stroka& s) {
+    strcat(str, s.str);
+    return *this;
+}
+int Stroka::operator==(const Stroka& s) {
+    return strcmp(str, s.str) == 0;
+}
+int Stroka::dlina() {
+    return strlen(str);
+}
+void Stroka::vvod() {
+    cin >> str;
+}
+void Stroka::vyvod() {
+    cout << str;
+}
+int main() {
+    Stroka s1("qwert"), s3, s4("sl"), s5;
+    s3.vvod();
+    s3 = "asdfg";
+    s3.vyvod();
+    s5 = s1 + s3 + s4;
+    cout << "dlina s5 = " << s5.dlina() << endl;
+    s5.vyvod();   
+    if (s1 == s4) {
+        cout << "\nстроки s1 и s4 равны";
+    } else {
+        cout << "\nстроки s1 и s4 не равны";
+    }
+    return 0;
+}
+
+3. Изменить программу так, чтобы вместо библиотечных функций, выполняющих — действия со строкой, использовались аналогичные функции, написанные при выполнении заданий лабораторной работы 4.
+4. Дополнить описание класса конструктором, который создает экземпляр класса, используя заданный размер динамической памяти. Понадобится ли при наличии такого конструктора деструктор? 
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Описание класса для работы со строкой
+// Stroka.h
+#ifndef STROKA_H
+#define STROKA_H
+
+class Stroka {
+private:
+    char *str; // указатель на строку
+public:
+    Stroka(const char *string = ""); // конструктор с параметром по умолчанию
+    Stroka(const Stroka &s); // конструктор копирования
+    ~Stroka(); // деструктор
+    Stroka &operator=(const Stroka &s); // перегрузка оператора присваивания
+    Stroka operator+(const Stroka &s) const; // перегрузка оператора сложения
+    bool operator==(const Stroka &s) const; // перегрузка оператора сравнения
+    int length() const; // метод для определения длины строки
+    void input(); // метод для ввода строки
+    void output() const; // метод для вывода строки
+};
+
+#endif
+
+
+// Stroka.cpp
+#include "Stroka.h"
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+Stroka::Stroka(const char *string) {
+    str = new char[strlen(string) + 1];
+    strcpy(str, string);
+}
+
+Stroka::Stroka(const Stroka &s) {
+    str = new char[strlen(s.str) + 1];
+    strcpy(str, s.str);
+}
+
+Stroka::~Stroka() {
+    delete[] str;
+}
+
+Stroka &Stroka::operator=(const Stroka &s) {
+    if (this != &s) {
+        delete[] str; // освобождаем старую память
+        str = new char[strlen(s.str) + 1];
+        strcpy(str, s.str);
+    }
+    return *this;
+}
+
+Stroka Stroka::operator+(const Stroka &s) const {
+    Stroka result;
+    result.str = new char[length() + s.length() + 1];
+    strcpy(result.str, str);
+    strcat(result.str, s.str);
+    return result;
+}
+
+bool Stroka::operator==(const Stroka &s) const {
+    return strcmp(str, s.str) == 0;
+}
+
+int Stroka::length() const {
+    return strlen(str);
+}
+
+void Stroka::input() {
+    char temp[100];
+    cout << "Введите строку: ";
+    cin.getline(temp, 100);
+    delete[] str; // освобождаем старую память
+    str = new char[strlen(temp) + 1];
+    strcpy(str, temp);
+}
+
+void Stroka::output() const {
+    cout << str;
+}
+
+
+2. Главная функция
+// main.cpp
+#include "Stroka.h"
+#include <iostream>
+using namespace std;
+
+int main() {
+    Stroka s1("qwert"), s3, s4("sl"), s5;
+    s3.input();
+    s3 = "asdfg";
+    s3.output();
+    s5 = s1 + s3 + s4;
+    cout << "\ndlina s5 = " << s5.length() << endl;
+    s5.output();   
+    if (s1 == s4) {
+        cout << "\nстроки s1 и s4 равны";
+    } else {
+        cout << "\nстроки s1 и s4 не равны";
+    }
+    return 0;
+}
+
+
+4. Добавление конструктора для создания строки с заданным размером памяти
+// Stroka.h
+#ifndef STROKA_H
+#define STROKA_H
+
+class Stroka {
+private:
+    char *str; // указатель на строку
+public:
+    Stroka(const char *string = ""); // конструктор с параметром по умолчанию
+    Stroka(int size); // конструктор для создания строки заданного размера
+    Stroka(const Stroka &s); // конструктор копирования
+    ~Stroka(); // деструктор
+    Stroka &operator=(const Stroka &s); // перегрузка оператора присваивания
+    Stroka operator+(const Stroka &s) const; // перегрузка оператора сложения
+    bool operator==(const Stroka &s) const; // перегрузка оператора сравнения
+    int length() const; // метод для определения длины строки
+    void input(); // метод для ввода строки
+    void output() const; // метод для вывода строки
+};
+
+#endif
+
+// Stroka.cpp
+#include "Stroka.h"
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+
+Stroka::Stroka(const char *string) {
+    str = new char[strlen(string) + 1];
+    strcpy(str, string);
+}
+
+Stroka::Stroka(int size) {
+    str = new char[size + 1];
+    str[0] = '\0'; // пустая строка
+}
+
+// Остальные методы класса остаются без изменений
